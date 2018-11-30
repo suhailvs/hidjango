@@ -28,3 +28,18 @@ class CURDViewSet(
             queryset = kwargs["model"].objects.all()
             serializer_class = serializer_factory(kwargs["model"])
         return CustomViewSet
+
+from .models import Nugget, NuggetSerializer
+from rest_framework.permissions import IsAuthenticated
+class NuggetList(CURDViewSet):
+    queryset = Nugget.objects.all()
+    serializer_class = NuggetSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, format=None):
+        # queryset = NuggetSerializer(Organization.objects.filter(status = 1),many=True, context={'request': request})
+        return Response(queryset.data)
+
+    def perform_create(self, serializer):
+        req = serializer.context['request']
+        serializer.save(created_by=req.user)

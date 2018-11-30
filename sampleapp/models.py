@@ -32,4 +32,16 @@ class User(AbstractUser,BaseModel):
     user_type = models.CharField(max_length=2, choices=USER_TYPE_CHOICES)
     middle_name = models.CharField(max_length=255, blank=True, null=True)
     status = models.SmallIntegerField(default = 1)
-   
+
+from django.conf import settings
+
+# https://stackoverflow.com/questions/38556217/
+class Nugget(BaseModel):
+    added_by = models.IntegerField(null=True) # models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='added_by', blank=True, null=True)
+
+from rest_framework import serializers
+class NuggetSerializer(serializers.ModelSerializer):
+    created_by = serializers.StringRelatedField(default=serializers.CurrentUserDefault(), read_only=True)
+    class Meta:
+        model = Nugget
+        fields = "__all__"
