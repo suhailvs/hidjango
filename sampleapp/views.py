@@ -36,10 +36,6 @@ class NuggetList(CURDViewSet):
     serializer_class = NuggetSerializer
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request, format=None):
-        # queryset = NuggetSerializer(Organization.objects.filter(status = 1),many=True, context={'request': request})
-        return Response(queryset.data)
-
     def perform_create(self, serializer):
         req = serializer.context['request']
         serializer.save(created_by=req.user)
